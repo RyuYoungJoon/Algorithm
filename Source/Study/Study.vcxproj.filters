@@ -10,6 +10,9 @@
     <Filter Include="BaekJoon\Ex_for">
       <UniqueIdentifier>{bc9c4260-e6d3-4a3b-aefe-35c3e82086aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BaekJoon\Ex_while">
+      <UniqueIdentifier>{4b2a8f0a-dc5e-42a2-8ad2-8537474ec768}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaekJoon\BruteForce\970213.cpp">
@@ -35,6 +38,15 @@
     </ClCompile>
     <ClCompile Include="2438.cpp">
       <Filter>BaekJoon\Ex_for</Filter>
+    </ClCompile>
+    <ClCompile Include="10952.cpp">
+      <Filter>BaekJoon\Ex_while</Filter>
+    </ClCompile>
+    <ClCompile Include="1110.cpp">
+      <Filter>BaekJoon\Ex_while</Filter>
+    </ClCompile>
+    <ClCompile Include="10951.cpp">
+      <Filter>BaekJoon\Ex_while</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
