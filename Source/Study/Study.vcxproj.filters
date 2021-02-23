@@ -7,10 +7,34 @@
     <Filter Include="BaekJoon\BruteForce">
       <UniqueIdentifier>{430b6c7b-87c7-4780-a942-e6bbee0cafe0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BaekJoon\Ex_for">
+      <UniqueIdentifier>{bc9c4260-e6d3-4a3b-aefe-35c3e82086aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaekJoon\BruteForce\970213.cpp">
       <Filter>BaekJoon\BruteForce</Filter>
+    </ClCompile>
+    <ClCompile Include="2739.cpp">
+      <Filter>BaekJoon\Ex_for</Filter>
+    </ClCompile>
+    <ClCompile Include="8393.cpp">
+      <Filter>BaekJoon\Ex_for</Filter>
+    </ClCompile>
+    <ClCompile Include="15552.cpp">
+      <Filter>BaekJoon\Ex_for</Filter>
+    </ClCompile>
+    <ClCompile Include="2741.cpp">
+      <Filter>BaekJoon\Ex_for</Filter>
+    </ClCompile>
+    <ClCompile Include="2742.cpp">
+      <Filter>BaekJoon\Ex_for</Filter>
+    </ClCompile>
+    <ClCompile Include="11021.cpp">
+      <Filter>BaekJoon\Ex_for</Filter>
+    </ClCompile>
+    <ClCompile Include="2438.cpp">
+      <Filter>BaekJoon\Ex_for</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
