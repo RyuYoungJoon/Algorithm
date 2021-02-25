@@ -13,6 +13,9 @@
     <Filter Include="BaekJoon\Ex_while">
       <UniqueIdentifier>{4b2a8f0a-dc5e-42a2-8ad2-8537474ec768}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BaekJoon\1_Array">
+      <UniqueIdentifier>{1f7bf5a2-fdaa-40be-a6db-e52e932ac5ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaekJoon\BruteForce\970213.cpp">
@@ -47,6 +50,21 @@
     </ClCompile>
     <ClCompile Include="10951.cpp">
       <Filter>BaekJoon\Ex_while</Filter>
+    </ClCompile>
+    <ClCompile Include="10818.cpp">
+      <Filter>BaekJoon\1_Array</Filter>
+    </ClCompile>
+    <ClCompile Include="2562.cpp">
+      <Filter>BaekJoon\1_Array</Filter>
+    </ClCompile>
+    <ClCompile Include="2577.cpp">
+      <Filter>BaekJoon\1_Array</Filter>
+    </ClCompile>
+    <ClCompile Include="BaekJoon\3052.cpp">
+      <Filter>BaekJoon\1_Array</Filter>
+    </ClCompile>
+    <ClCompile Include="BaekJoon\1546.cpp">
+      <Filter>BaekJoon\1_Array</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
