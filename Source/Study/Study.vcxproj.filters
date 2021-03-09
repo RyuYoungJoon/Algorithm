@@ -66,5 +66,8 @@
     <ClCompile Include="BaekJoon\1546.cpp">
       <Filter>BaekJoon\1_Array</Filter>
     </ClCompile>
+    <ClCompile Include="8958.cpp">
+      <Filter>BaekJoon\1_Array</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
