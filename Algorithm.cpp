@@ -3,6 +3,7 @@
 #include "List.h"
 #include "Stack.h"
 #include "Queue.h"
+#include <queue>
 
 using namespace std;
 
@@ -28,7 +29,8 @@ struct Vertex
 vector<Vertex> vertices;
 vector<vector<int>> adjacent;
 
-vector<bool> visited;
+vector<bool> visited; // DFS 방문용
+vector<bool> discovered; // BFS 발견용
 
 void CreateGraph()
 {
@@ -36,16 +38,16 @@ void CreateGraph()
     adjacent = vector<vector<int>>(6);
 
     // 인접 리스트
-    adjacent[0].push_back(1);
+    /*adjacent[0].push_back(1);
     adjacent[0].push_back(3);
     adjacent[1].push_back(0);
     adjacent[1].push_back(2);
     adjacent[1].push_back(3);
     adjacent[3].push_back(4);
-    adjacent[5].push_back(4);
+    adjacent[5].push_back(4);*/
 
     // 인접 행렬
-    /*adjacent = vector<vector<int>>
+    adjacent = vector<vector<int>>
     {
         {0,1,0,1,0,0},
         {1,0,1,1,0,0},
@@ -53,7 +55,7 @@ void CreateGraph()
         {0,0,0,0,1,0},
         {0,0,0,0,0,0},
         {0,0,0,0,1,0},
-    };*/
+    };
 }
 
 // DFS
@@ -106,6 +108,67 @@ void DfsAll()
     {
         if (visited[i] == false)
             Dfs(i);
+    }
+}
+
+void Bfs(int here)
+{
+    // 누구에 의해 발견 되었는지?
+    vector<int> parent(6, -1);
+    // 시작점에서 얼만큼 떨어져 있는지?
+    vector<int> distance(6, -1);
+
+    queue<int> q; // 예약 시스템
+    q.push(here);
+    discovered[here] = true;
+
+    parent[here] = here;
+    distance[here] = 0;
+
+    // q[0   ]
+    // 0   q[ 1 3  ]
+    // 0 1  q[  3  ]
+    // 0 1  q[ 3 2  ]
+    // 0 1 3 q[ 2 4  ]
+    // 0 1 3 2 q[ 4  ]
+    // 0 1 3 2 4 q[   ]
+
+    while (q.empty() == false)
+    {
+        here = q.front();
+        q.pop();
+
+        cout << "Visited : " << here << endl;
+
+        for (int there = 0; there < 6; there++)
+        {
+            if (adjacent[here][there] == 0)
+                continue;
+
+            if (discovered[there])
+                continue;
+
+            q.push(there);
+            discovered[there] = true;
+
+            // there는 here로 인해 발견되었다.
+            parent[there] = here;
+            distance[there] = distance[here] + 1;
+        }
+    }
+
+    int a = 3;
+}
+
+void BfsAll()
+{
+    // 시작지점에 인접한 노드를 탐색하다보니
+    // 길찾기에 유용함.
+
+    for (int i = 0; i < 6; ++i)
+    {
+        if (discovered[i] == false)
+            Bfs(i);
     }
 }
 
@@ -247,6 +310,10 @@ int main()
     CreateGraph();
 
     //Dfs(0);
-    DfsAll();
+    //DfsAll();
+    
+
+    discovered = vector<bool>(6, false);
+    Bfs(0);
 }
 
