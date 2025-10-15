@@ -6,104 +6,156 @@
 
 using namespace std;
 
+// push_back O(1)
+// 중간 삽입/삭제 O(n)
+// 임의 접근 O(1)
+// [][][][]
+// 동적 배열
+// 
+// 
+// [] <-> [] <-> [] <-> []
+// 연결 리스트
+// 삽입/삭제 O(1)
+// 임의접근 O(n) 임의접근 불가, 순차 조회해야함.
+// 
+// 
+// 스택 O(1)
+// 큐 O(1)
+
+void CreateGraph_1()
+{
+    struct Vertex
+    {
+        vector<Vertex*> edges;
+        // int data'
+    };
+
+    vector<Vertex> v;
+    v.resize(6);
+
+    v[0].edges.push_back(&v[1]);
+    v[0].edges.push_back(&v[3]);
+
+    v[1].edges.push_back(&v[0]);
+    v[1].edges.push_back(&v[2]);
+    v[1].edges.push_back(&v[3]);
+    
+    v[3].edges.push_back(&v[4]);
+    
+    v[5].edges.push_back(&v[4]);
+
+    // Q 0번 -> 3번 정점이 연결되어 있나요?
+    bool connected = false;
+    for (Vertex* edge : v[0].edges)
+    {
+        if (edge == &v[3])
+        {
+            connected = true;
+            break;
+        }
+    }
+
+}
+
+void CreateGraph_2()
+{
+    struct Vertex
+    {
+        // int data;
+    };
+
+    vector<Vertex> v;
+    v.resize(6);
+
+    // 연결된 목록을 따로 관리
+    // adjacent[n] -> n번째 정점과 연결된 정점 목록
+    vector<vector<int>> adjacent(6);
+
+    adjacent[0] = { 1,3 };
+    adjacent[1] = { 0,2,3 };
+    adjacent[3] = { 4 };
+    adjacent[5] = { 4 };
+
+    // 정점이 100개
+    // - 지하철 노선도 -> 서로 드문 드문 연결 (양옆, 환승역이라면 조금 더 ++)
+    // - 페이스북 친구 -> 서로 빽빽하게 연결
+    // 이러면 이 방법은 힘들다..
+
+    // Q 0번 -> 3번 정점이 연결되어 있나요?
+    bool connected = false;
+    for (int vertex : adjacent[0])
+    {
+        if (vertex == 3)
+        {
+            connected = true;
+            break;
+        }
+    }
+
+    // STL
+    vector<int>& adj = adjacent[0];
+    bool connected2 = (std::find(adj.begin(), adj.end(), 3) != adj.end());
+}
+
+void CreateGraph_3()
+{
+    struct Vertex
+    {
+        // int data;
+    };
+
+    vector<Vertex> v;
+    v.resize(6);
+
+    // 연결된 목록을 따로 관리
+    // 연결 되어있는건 o, 연결 안되어있는건 X
+    // [X][O][X][O][X][X]
+    // [0][X][O][O][X][X]
+    // [X][X][X][X][X][X]
+    // [X][X][X][X][0][X]
+    // [X][X][X][X][X][X]
+    // [X][X][X][X][O][X]
+    //
+    // 읽는 방법 : adjacant[from][to]
+    // 행렬을 이용한 그래프 표현 (2차원 배열)
+    // 메모리 소모가 심하지만, 빠른 접근이 가능하다.
+    // 간선이 많은 경우 이점이 있다.
+
+    vector<vector<bool>> adjacent(6, vector<bool>(6, false));
+    adjacent[0][1] = true;
+    adjacent[0][3] = true;
+    adjacent[1][0] = true;
+    adjacent[1][2] = true;
+    adjacent[1][3] = true;
+    adjacent[3][4] = true;
+    adjacent[5][4] = true;
+
+    // 정점이 100개
+    // - 지하철 노선도 -> 서로 드문 드문 연결 (양옆, 환승역이라면 조금 더 ++)
+    // - 페이스북 친구 -> 서로 빽빽하게 연결
+    // 이러면 이 방법은 힘들다..
+
+    // Q 0번 -> 3번 정점이 연결되어 있나요?
+    bool connected = adjacent[0][3];
+
+    // 가중치 버전
+    vector<vector<int>> adjacent2 =
+    {
+        vector<int> {-1, 15, -1, 35, -1, -1},
+        vector<int> {15, -1, 5, 10, -1, -1},
+        vector<int> {-1, -1, -1, -1, -1, -1},
+        vector<int> {-1, -1, -1, -1, 5, -1},
+        vector<int> {-1, -1, -1, -1, -1, -1},
+        vector<int> {-1, -1, -1, -1, 5, -1},
+    };
+
+}
 
 int main()
 {
-    //// TODO : 내가 직접 Vector 만들어보기
-    //vector<int> v;
-
-    //v.reserve(100);
-
-    //v.resize(10);
-
-    //for (int i = 0; i < 100; ++i)
-    //{
-    //    v.push_back(i);
-    //    cout << v[i] << " " << v.size() << " " << v.capacity() << endl;
-    //}
-
-    //v.resize(10);
-
-
-    //v.clear();
-    //cout << v.size() << " " << v.capacity() << endl;
-
-    List<int> li;
-
-    List<int>::iterator eraseIt;
-
-    // 리스트 모양
-    // [ ] <-> [ ] <-> [ ]
-    for (int i = 0; i < 10; ++i)
-    {
-        if (i == 5)
-        {
-            eraseIt = li.insert(li.end(), i);
-        }
-        else
-        {
-            li.push_back(i);
-        }
-    }
-
-    // TODO
-    // 리스트가 중간삽입 삭제는 빠르다고 하는데 임의 접근은 안된다는게 모순적이지 않나?
-    // 이거에 대해 찾아봐야겠다. 
-    //
-    li.pop_back();
-
-    li.erase(eraseIt);
-
-    for (List<int>::iterator it = li.begin(); it != li.end(); ++it)
-    {
-        cout << (*it) << endl;
-    }
-
-    // vector
-    // - push_back
-    // - push_front
-    // [0][1][2][3][ ][ ]
-    // list 임의 접근 불가
- 
-
-    // Queue
-
-    ArrayQueue<int> q;
-
-    for (int i = 0; i < 100; ++i)
-        q.push(i);
-
-    while (q.empty() == false)
-    {
-        int value = q.front();
-        q.pop();
-        cout << value << endl;
-    }
-
-
-    int size = q.size();
-
-    // Stack
-
-    Stack<int, list<int>> s;
-
-    // 삽입
-    s.push(1);
-    s.push(2);
-    s.push(3);
-
-    // 최상위 원소
-
-    while (s.empty() == false)
-    {
-        int data = s.top();
-
-        // 최상위 원소 삭제
-        s.pop();
-
-        cout << data << endl;
-    }
-
-    //int size = s.size();
+    // 그래프
+    CreateGraph_1();
+    CreateGraph_2();
+    CreateGraph_3();
 }
 

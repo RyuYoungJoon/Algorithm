@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Player.h"
 #include "Board.h"
+#include <stack>
 
 void Player::Init(Board* board)
 {
@@ -53,7 +54,36 @@ void Player::Init(Board* board)
 		}
 	}
 
+	stack<Pos> s;
 
+	for (int i = 0; i < m_Path.size() - 1; ++i)
+	{
+		// s.top() == m_Path[i+1]의 의미
+		// 내가 가는길을 stack에 옮기고 있었다.
+		// 근데 가는 길에서 다음 다음번째 길이 s.top()과 같다?
+		// 이 말은 다음 길로 갔는데 그 길이 막다른 길이어서 다시 뒤로 갔다.
+		// 즉 다다음번 길이 top이랑 같다.
+		// 그럼 이건 다시 되돌아오고 있다는 뜻이니까 다 pop을 해줘서 없애버린다!
+		if (s.empty() == false && s.top() == m_Path[i + 1])
+			s.pop();
+		else
+			s.push(m_Path[i]);
+	}
+
+	// 목적지 도착
+	if (m_Path.empty() == false)
+		s.push(m_Path.back());
+
+	vector<Pos> path;
+	while (s.empty() == false)
+	{
+		path.push_back(s.top());
+		s.pop();
+	}
+
+	std::reverse(path.begin(), path.end());
+
+	m_Path = path;
 }
 
 void Player::Update(uint64 deltaTick)
