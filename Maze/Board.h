@@ -31,6 +31,7 @@ public:
 
 	Pos				GetEnterPos() { return Pos{ 1,1 }; }
 	Pos				GetExitPos() { return Pos{ m_Size - 2, m_Size - 2 }; }
+	int32			GetSize() { return m_Size; }
 
 
 private:

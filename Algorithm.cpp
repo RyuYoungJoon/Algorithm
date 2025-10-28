@@ -4,316 +4,112 @@
 #include "Stack.h"
 #include "Queue.h"
 #include <queue>
+#include <string>
 
 using namespace std;
 
-// [ ][ ][ ][ ][ ][ ][ ][ ]
-
-// DFS (Depth First Search) 깊이 우선 탐색
-// 일종의 전선이라고 생각한다면, 보스방이라고 생각한다면
-// 0번방부터 입장한다. 그리고 1번방 잡고 2번방 잡고 그 길 없으면 1번 돌아와서 3번방 4번방 쭉쭉쭉 끝날때까지 깊게 들어감.
-
-
-// BFS (Breadth First Search) 너비 우선 탐색
-// 굉장히 신중한 아이
-// 0번방 입장하면 1번방으로 들어감. 그 이후 더 이상 들어가지 않음.
-// 다시 0번방으로 돌아가서 입구랑 연결되어있는 방으로 들어가서 보스를 잡으려고 한다.
-// 안전하게 쉬운곳부터 격파하는 아이.
 
 struct Vertex
 {
-    // int data;
+	// int data;
+
 
 };
 
-vector<Vertex> vertices;
-vector<vector<int>> adjacent;
-
-vector<bool> visited; // DFS 방문용
-vector<bool> discovered; // BFS 발견용
+vector<Vertex> vericies;
+vector<vector<int>> adjacent; // 인접 행렬
 
 void CreateGraph()
 {
-    vertices.resize(6);
-    adjacent = vector<vector<int>>(6);
+	vericies.resize(6);
+	adjacent = vector<vector<int>>(6, vector<int>(6, -1));
+	// -1 -1 -1 -1 -1 -1
+	// -1 -1 -1 -1 -1 -1
+	// -1 -1 -1 -1 -1 -1
+	// -1 -1 -1 -1 -1 -1
+	// -1 -1 -1 -1 -1 -1
+	// -1 -1 -1 -1 -1 -1
 
-    // 인접 리스트
-    /*adjacent[0].push_back(1);
-    adjacent[0].push_back(3);
-    adjacent[1].push_back(0);
-    adjacent[1].push_back(2);
-    adjacent[1].push_back(3);
-    adjacent[3].push_back(4);
-    adjacent[5].push_back(4);*/
-
-    // 인접 행렬
-    adjacent = vector<vector<int>>
-    {
-        {0,1,0,1,0,0},
-        {1,0,1,1,0,0},
-        {0,0,0,0,0,0},
-        {0,0,0,0,1,0},
-        {0,0,0,0,0,0},
-        {0,0,0,0,1,0},
-    };
+	adjacent[0][1] = 15;
+	adjacent[0][3] = 35;
+	adjacent[1][0] = 15;
+	adjacent[1][2] = 5;
+	adjacent[1][3] = 10;
+	adjacent[3][4] = 5;
+	adjacent[5][4] = 5;
 }
 
-// DFS
-// here : 시작 위치
-
-// Dfs(0)
-// - Dfs(1)
-// -- Dfs(2)
-// -- Dfs(3)
-// -- Dfs(4)
-// - Dfs(3)
-
-
-void Dfs(int here)
+void Dijikstra(int here)
 {
-    // 방문!
-    visited[here] = true;
-    cout << "Visited : " << here << endl;
+	struct VertexCost
+	{
+		int vertex;
+		int cost;
+	};
 
-    // 인접 리스트 version
-    // 모든 인접 정점을 순회한다.
-    /*for (int i = 0; i < adjacent[here].size(); ++i)
-    {
-        int there = adjacent[here][i];
+	list<VertexCost> discovered; // 발견 목록
+	vector<int> best(6, INT32_MAX); // 각 정점별로 지금까지 발견한 최소 거리
+	vector<int> parent(6, -1);
 
-        if (visited[there] == false)
-        {
-            Dfs(there);
-        }
-    }*/
 
-    // 인접 행렬 버전
-    // 모든 인접 정점을 순회한다.
-    for (int there = 0; there < 6; there++)
-    {
-        if (adjacent[here][there] == 0)
-            continue;
+	discovered.push_back(VertexCost{ here, 0 });
+	best[here] = 0;
+	parent[here] = here;
 
-        // 아직 방문하지 않은 곳이 있으면 방문한다.
-        if (visited[there] == false)
-            Dfs(there);
-    }
-}
+	while (discovered.empty() == false)
+	{
+		// 제일 좋은 후보를 찾는다
+		list<VertexCost>::iterator bestIt;
+		int bestCost = INT32_MAX;
 
-void DfsAll()
-{
-    visited = vector<bool>(6, false);
+		for (auto it = discovered.begin(); it != discovered.end(); ++it)
+		{
+			const int cost = it->cost;
 
-    for (int i = 0; i < 6; ++i)
-    {
-        if (visited[i] == false)
-            Dfs(i);
-    }
-}
+			if (cost < bestCost)
+			{
+				bestCost = cost;
+				bestIt = it;
+			}
+		}
 
-void Bfs(int here)
-{
-    // 누구에 의해 발견 되었는지?
-    vector<int> parent(6, -1);
-    // 시작점에서 얼만큼 떨어져 있는지?
-    vector<int> distance(6, -1);
+		int cost = bestIt->cost;
+		here = bestIt->vertex;
+		discovered.erase(bestIt);
 
-    queue<int> q; // 예약 시스템
-    q.push(here);
-    discovered[here] = true;
+		// 방문? 더 짧은 경로를 뒤늦게 찾았다면 스킵.
+		if (best[here] < cost)
+			continue;
 
-    parent[here] = here;
-    distance[here] = 0;
+		// 방문!
 
-    // q[0   ]
-    // 0   q[ 1 3  ]
-    // 0 1  q[  3  ]
-    // 0 1  q[ 3 2  ]
-    // 0 1 3 q[ 2 4  ]
-    // 0 1 3 2 q[ 4  ]
-    // 0 1 3 2 4 q[   ]
+		for (int there = 0; there < 6; ++there)
+		{
+			//연결되지 않았으면 스킵.
+			if (adjacent[here][there] == -1)
+				continue;
 
-    while (q.empty() == false)
-    {
-        here = q.front();
-        q.pop();
+			// 더 좋은 경로를 과거에 찾았으면 스킵
+			int nextCost = best[here] + adjacent[here][there];
+			if (nextCost >= best[there])
+				continue;
 
-        cout << "Visited : " << here << endl;
+			best[there] = nextCost;
+			parent[there] = here;
 
-        for (int there = 0; there < 6; there++)
-        {
-            if (adjacent[here][there] == 0)
-                continue;
+			// (3, 35) (3, 25)
+			discovered.push_back(VertexCost{ there, nextCost });
+		}
 
-            if (discovered[there])
-                continue;
+	}
 
-            q.push(there);
-            discovered[there] = true;
-
-            // there는 here로 인해 발견되었다.
-            parent[there] = here;
-            distance[there] = distance[here] + 1;
-        }
-    }
-
-    int a = 3;
-}
-
-void BfsAll()
-{
-    // 시작지점에 인접한 노드를 탐색하다보니
-    // 길찾기에 유용함.
-
-    for (int i = 0; i < 6; ++i)
-    {
-        if (discovered[i] == false)
-            Bfs(i);
-    }
-}
-
-void CreateGraph_1()
-{
-    struct Vertex
-    {
-        vector<Vertex*> edges;
-        // int data'
-    };
-
-    vector<Vertex> v;
-    v.resize(6);
-
-    v[0].edges.push_back(&v[1]);
-    v[0].edges.push_back(&v[3]);
-
-    v[1].edges.push_back(&v[0]);
-    v[1].edges.push_back(&v[2]);
-    v[1].edges.push_back(&v[3]);
-    
-    v[3].edges.push_back(&v[4]);
-    
-    v[5].edges.push_back(&v[4]);
-
-    // Q 0번 -> 3번 정점이 연결되어 있나요?
-    bool connected = false;
-    for (Vertex* edge : v[0].edges)
-    {
-        if (edge == &v[3])
-        {
-            connected = true;
-            break;
-        }
-    }
-
-}
-
-void CreateGraph_2()
-{
-    struct Vertex
-    {
-        // int data;
-    };
-
-    vector<Vertex> v;
-    v.resize(6);
-
-    // 연결된 목록을 따로 관리
-    // adjacent[n] -> n번째 정점과 연결된 정점 목록
-    vector<vector<int>> adjacent(6);
-
-    adjacent[0] = { 1,3 };
-    adjacent[1] = { 0,2,3 };
-    adjacent[3] = { 4 };
-    adjacent[5] = { 4 };
-
-    // 정점이 100개
-    // - 지하철 노선도 -> 서로 드문 드문 연결 (양옆, 환승역이라면 조금 더 ++)
-    // - 페이스북 친구 -> 서로 빽빽하게 연결
-    // 이러면 이 방법은 힘들다..
-
-    // Q 0번 -> 3번 정점이 연결되어 있나요?
-    bool connected = false;
-    for (int vertex : adjacent[0])
-    {
-        if (vertex == 3)
-        {
-            connected = true;
-            break;
-        }
-    }
-
-    // STL
-    vector<int>& adj = adjacent[0];
-    bool connected2 = (std::find(adj.begin(), adj.end(), 3) != adj.end());
-}
-
-void CreateGraph_3()
-{
-    struct Vertex
-    {
-        // int data;
-    };
-
-    vector<Vertex> v;
-    v.resize(6);
-
-    // 연결된 목록을 따로 관리
-    // 연결 되어있는건 o, 연결 안되어있는건 X
-    // [X][O][X][O][X][X]
-    // [0][X][O][O][X][X]
-    // [X][X][X][X][X][X]
-    // [X][X][X][X][0][X]
-    // [X][X][X][X][X][X]
-    // [X][X][X][X][O][X]
-    //
-    // 읽는 방법 : adjacant[from][to]
-    // 행렬을 이용한 그래프 표현 (2차원 배열)
-    // 메모리 소모가 심하지만, 빠른 접근이 가능하다.
-    // 간선이 많은 경우 이점이 있다.
-
-    vector<vector<bool>> adjacent(6, vector<bool>(6, false));
-    adjacent[0][1] = true;
-    adjacent[0][3] = true;
-    adjacent[1][0] = true;
-    adjacent[1][2] = true;
-    adjacent[1][3] = true;
-    adjacent[3][4] = true;
-    adjacent[5][4] = true;
-
-    // 정점이 100개
-    // - 지하철 노선도 -> 서로 드문 드문 연결 (양옆, 환승역이라면 조금 더 ++)
-    // - 페이스북 친구 -> 서로 빽빽하게 연결
-    // 이러면 이 방법은 힘들다..
-
-    // Q 0번 -> 3번 정점이 연결되어 있나요?
-    bool connected = adjacent[0][3];
-
-    // 가중치 버전
-    vector<vector<int>> adjacent2 =
-    {
-        vector<int> {-1, 15, -1, 35, -1, -1},
-        vector<int> {15, -1, 5, 10, -1, -1},
-        vector<int> {-1, -1, -1, -1, -1, -1},
-        vector<int> {-1, -1, -1, -1, 5, -1},
-        vector<int> {-1, -1, -1, -1, -1, -1},
-        vector<int> {-1, -1, -1, -1, 5, -1},
-    };
-
+	int a = 0;
 }
 
 int main()
 {
-    // 그래프
-    CreateGraph_1();
-    CreateGraph_2();
-    CreateGraph_3();
-    CreateGraph();
+	CreateGraph();
 
-    //Dfs(0);
-    //DfsAll();
-    
-
-    discovered = vector<bool>(6, false);
-    Bfs(0);
+	Dijikstra(0);
 }
 

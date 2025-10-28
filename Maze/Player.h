@@ -19,6 +19,10 @@ public:
 	bool	CanGo(Pos pos);
 
 private:
+	void RightHand();
+	void Bfs();
+
+private:
 	Pos			m_Pos = {};
 	int32		m_Dir = DIR_UP;
 	Board*		m_Board = nullptr;
